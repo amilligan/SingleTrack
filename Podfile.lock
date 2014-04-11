@@ -1,0 +1,24 @@
+PODS:
+  - Cedar (0.9.5)
+  - SingleTrack (0.1):
+    - SingleTrack/Lib
+    - SingleTrack/Lib
+  - SingleTrack/Lib (0.1):
+    - SingleTrack/Lib
+  - SingleTrack/SpecHelpers (0.1):
+    - SingleTrack/Lib
+
+DEPENDENCIES:
+  - Cedar
+  - SingleTrack (from `.`)
+  - SingleTrack/SpecHelpers (from `.`)
+
+EXTERNAL SOURCES:
+  SingleTrack:
+    :path: .
+
+SPEC CHECKSUMS:
+  Cedar: 16cbb75084031aa41304cdeb0d0c8319c1af1cae
+  SingleTrack: 184d9984d8392e02334105905d497d725d1b4fdc
+
+COCOAPODS: 0.31.1
