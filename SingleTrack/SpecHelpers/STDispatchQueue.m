@@ -32,6 +32,10 @@ void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 
 @implementation STDispatchQueue
 
++ (void)beforeEach {
+    [self.queues removeAllObjects];
+}
+
 + (void)initialize {
     real_dispatch_queue_create = proxy_dispatch_queue_create;
     proxy_dispatch_queue_create = st_dispatch_queue_create;

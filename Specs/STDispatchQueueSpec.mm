@@ -14,6 +14,21 @@ describe(@"STDispatchQueue", ^{
         queue = [[STDispatchQueue alloc] init];
     });
 
+    describe(@"+beforeEach", ^{
+        __block AsyncThing *thing;
+
+        subjectAction(^{ [[STDispatchQueue class] performSelector:@selector(beforeEach)]; });
+
+        beforeEach(^{
+            thing = [[AsyncThing alloc] init];
+            STDispatchQueue.queues should_not be_empty;
+        });
+
+        it(@"should clear the list of queues", ^{
+            STDispatchQueue.queues should be_empty;
+        });
+    });
+
     describe(@"+queues", ^{
         it(@"should default to empty", ^{
             STDispatchQueue.queues should be_empty;
