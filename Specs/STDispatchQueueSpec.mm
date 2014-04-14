@@ -84,6 +84,21 @@ describe(@"STDispatchQueue", ^{
             STDispatchQueue.queues should contain(thing.queue);
         });
     });
+
+    describe(@"dispatch_async", ^{
+        __block AsyncThing *thing;
+        NSUInteger newValue = 7;
+
+        subjectAction(^{ [thing setValueAsync:newValue]; });
+
+        beforeEach(^{
+            thing = [[AsyncThing alloc] init];
+        });
+
+        it(@"should execute the provided block (assuming synchronous behavior)", ^{
+            thing.value should equal(newValue);
+        });
+    });
 });
 
 SPEC_END
