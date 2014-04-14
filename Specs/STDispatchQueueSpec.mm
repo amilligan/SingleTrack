@@ -102,16 +102,16 @@ describe(@"STDispatchQueue", ^{
 
     describe(@"dispatch_async", ^{
         __block AsyncThing *thing;
-        NSUInteger newValue = 7;
 
-        subjectAction(^{ [thing setValueAsync:newValue]; });
+        subjectAction(^{ [thing setValueAsync:7]; });
 
         beforeEach(^{
+            STDispatch.behavior = STDispatchBehaviorManual;
             thing = [[AsyncThing alloc] init];
         });
 
-        it(@"should execute the provided block (assuming synchronous behavior)", ^{
-            thing.value should equal(newValue);
+        it(@"should enqueue the provided block on the queue", ^{
+            [(id)thing.queue tasks] should_not be_empty;
         });
     });
 });

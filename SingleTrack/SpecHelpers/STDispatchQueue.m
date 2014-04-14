@@ -10,7 +10,7 @@
 
 @end
 
-dispatch_queue_t (*real_dispatch_queue_create)(const char *label, dispatch_queue_attr_t attr);
+static dispatch_queue_t (*real_dispatch_queue_create)(const char *, dispatch_queue_attr_t);
 dispatch_queue_t st_dispatch_queue_create(const char *label, dispatch_queue_attr_t attr) {
     if (STDispatch.behavior == STDispatchBehaviorAsynchronous) {
         return real_dispatch_queue_create(label, attr);
@@ -21,7 +21,7 @@ dispatch_queue_t st_dispatch_queue_create(const char *label, dispatch_queue_attr
     }
 }
 
-void (*real_dispatch_async)(dispatch_queue_t queue, dispatch_block_t block);
+static void (*real_dispatch_async)(dispatch_queue_t, dispatch_block_t);
 void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     if (STDispatch.behavior == STDispatchBehaviorAsynchronous) {
         real_dispatch_async(queue, block);
