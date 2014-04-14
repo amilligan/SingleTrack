@@ -19,7 +19,7 @@ dispatch_queue_t st_dispatch_queue_create(const char *label, dispatch_queue_attr
 @implementation STDispatchQueue
 
 + (void)initialize {
-    dispatch_queue_create_proxy = st_dispatch_queue_create;
+    proxy_dispatch_queue_create = st_dispatch_queue_create;
 }
 
 + (NSMutableArray *)queues {
