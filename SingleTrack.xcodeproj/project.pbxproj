@@ -10,6 +10,7 @@
 		5F1749C118F8A989000615A3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B200CBEE9FB741D38450C255 /* libPods.a */; };
 		5FA0BA4418F8789A0075F967 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FA0BA4318F8789A0075F967 /* Foundation.framework */; };
 		5FA0BA4C18F8789A0075F967 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FA0BA4B18F8789A0075F967 /* main.m */; };
+		5FC4439218FC617B00EE08B7 /* STDispatchSpec.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5FC4439118FC617B00EE08B7 /* STDispatchSpec.mm */; };
 		5FEB751518F881BE00DD5298 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5FEB751318F881BE00DD5298 /* InfoPlist.strings */; };
 		5FEB753418F8823800DD5298 /* AsyncThing.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FEB753218F8823800DD5298 /* AsyncThing.h */; };
 		5FEB753518F8823800DD5298 /* AsyncThing.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FEB753318F8823800DD5298 /* AsyncThing.m */; };
@@ -35,6 +36,7 @@
 		5FA0BA4318F8789A0075F967 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5FA0BA4818F8789A0075F967 /* Specs-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Specs-Prefix.pch"; sourceTree = "<group>"; };
 		5FA0BA4B18F8789A0075F967 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		5FC4439118FC617B00EE08B7 /* STDispatchSpec.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = STDispatchSpec.mm; sourceTree = "<group>"; };
 		5FEB750E18F881BE00DD5298 /* AsyncLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AsyncLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FEB751218F881BE00DD5298 /* AsyncLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AsyncLib-Info.plist"; sourceTree = "<group>"; };
 		5FEB751418F881BE00DD5298 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				5FEB753618F883D300DD5298 /* STDispatchQueueSpec.mm */,
+				5FC4439118FC617B00EE08B7 /* STDispatchSpec.mm */,
 				5FA0BA4718F8789A0075F967 /* Supporting Files */,
 			);
 			path = Specs;
@@ -301,6 +304,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5FC4439218FC617B00EE08B7 /* STDispatchSpec.mm in Sources */,
 				5FA0BA4C18F8789A0075F967 /* main.m in Sources */,
 				5FEB753718F883D300DD5298 /* STDispatchQueueSpec.mm in Sources */,
 			);
