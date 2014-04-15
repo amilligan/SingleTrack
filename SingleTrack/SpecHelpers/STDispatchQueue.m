@@ -70,9 +70,7 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 }
 
 + (NSMutableArray *)queues {
-    if (!__queues) {
-        dispatch_queues();
-    }
+    if (!__queues) { dispatch_queues(); }
     return __queues;
 }
 

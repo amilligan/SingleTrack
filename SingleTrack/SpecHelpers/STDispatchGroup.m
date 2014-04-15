@@ -2,6 +2,14 @@
 #import "STDispatchGroup.h"
 #import "STDispatch.h"
 
+static NSMutableArray *__groups;
+NSArray *dispatch_groups() {
+    if (!__groups) {
+        __groups = [NSMutableArray array];
+    }
+    return __groups;
+}
+
 @interface STDispatchGroup ()
 
 @property (nonatomic, strong) NSMutableArray *tasks;
@@ -46,10 +54,7 @@ void st_dispatch_group_async(dispatch_group_t group, dispatch_queue_t queue, dis
 }
 
 + (NSMutableArray *)groups {
-    static NSMutableArray *__groups;
-    if (!__groups) {
-        __groups = [NSMutableArray array];
-    }
+    if (!__groups) { dispatch_groups(); }
     return __groups;
 }
 

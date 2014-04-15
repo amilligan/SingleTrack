@@ -1,5 +1,4 @@
-#import "STDispatchGroup.h"
-#import "STDispatch.h"
+#import "SingleTrack/SpecHelpers.h"
 #import "AsyncThing.h"
 
 using namespace Cedar::Matchers;
@@ -21,11 +20,11 @@ describe(@"STDispatchGroup", ^{
 
         beforeEach(^{
             thing = [[AsyncThing alloc] init];
-            STDispatchGroup.groups should_not be_empty;
+            dispatch_groups() should_not be_empty;
         });
 
         it(@"should clear the list of groups", ^{
-            STDispatchGroup.groups should be_empty;
+            dispatch_groups() should be_empty;
         });
     });
 
@@ -52,7 +51,7 @@ describe(@"STDispatchGroup", ^{
         subjectAction(^{ thing = [[AsyncThing alloc] init]; });
 
         it(@"should add the group to the list of instantiated groups", ^{
-            STDispatchGroup.groups should contain(thing.group);
+            dispatch_groups() should contain(thing.group);
         });
     });
 

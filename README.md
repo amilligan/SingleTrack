@@ -32,4 +32,5 @@ Overridden for testing asynchronous behavior with GCD queues
 
 Additional methods:
 dispatch_queues
+dispatch_groups
 

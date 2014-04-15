@@ -1,5 +1,14 @@
 #import <Foundation/Foundation.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+NSArray *dispatch_groups();
+#ifdef __cplusplus
+}
+#endif
+
+
 @interface STDispatchGroup : NSObject
 
 - (void)enqueue:(void (^)())task;
@@ -8,7 +17,6 @@
 
 @interface STDispatchGroup (Collections)
 
-+ (NSArray *)groups;
 - (NSArray *)tasks;
 
 @end
