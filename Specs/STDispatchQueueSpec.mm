@@ -1,3 +1,4 @@
+#import "SingleTrack.h"
 #import "STDispatchQueue.h"
 #import "STDispatch.h"
 #import "AsyncThing.h"
@@ -112,6 +113,21 @@ describe(@"STDispatchQueue", ^{
 
         it(@"should enqueue the provided block on the queue", ^{
             [(id)thing.queue tasks] should_not be_empty;
+        });
+    });
+
+    describe(@"dispatch_get_main_queue", ^{
+        __block dispatch_queue_t queue;
+
+        subjectAction(^{ queue = dispatch_get_main_queue(); });
+
+        it(@"should return a serial queue", PENDING);
+        it(@"should always return the same queue", ^{
+            dispatch_get_main_queue() should be_same_instance_as(queue);
+        });
+
+        it(@"should add the queue to the list of queues", ^{
+            STDispatchQueue.queues should contain(dispatch_get_main_queue());
         });
     });
 });
