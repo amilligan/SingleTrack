@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F1749C118F8A989000615A3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B200CBEE9FB741D38450C255 /* libPods.a */; };
 		5FA0BA4418F8789A0075F967 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FA0BA4318F8789A0075F967 /* Foundation.framework */; };
 		5FA0BA4C18F8789A0075F967 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FA0BA4B18F8789A0075F967 /* main.m */; };
+		5FC2312618FD9B8E0078FD78 /* libPods-AsyncLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FC2312518FD9B8E0078FD78 /* libPods-AsyncLib.a */; };
 		5FC4439218FC617B00EE08B7 /* STDispatchSpec.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5FC4439118FC617B00EE08B7 /* STDispatchSpec.mm */; };
 		5FC4439418FC637200EE08B7 /* STDispatchGroupSpec.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5FC4439318FC637200EE08B7 /* STDispatchGroupSpec.mm */; };
 		5FEB751518F881BE00DD5298 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5FEB751318F881BE00DD5298 /* InfoPlist.strings */; };
@@ -48,6 +48,7 @@
 		5FA0BA4318F8789A0075F967 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5FA0BA4818F8789A0075F967 /* Specs-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Specs-Prefix.pch"; sourceTree = "<group>"; };
 		5FA0BA4B18F8789A0075F967 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		5FC2312518FD9B8E0078FD78 /* libPods-AsyncLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AsyncLib.a"; path = "Pods/build/Debug/libPods-AsyncLib.a"; sourceTree = "<group>"; };
 		5FC4439118FC617B00EE08B7 /* STDispatchSpec.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = STDispatchSpec.mm; sourceTree = "<group>"; };
 		5FC4439318FC637200EE08B7 /* STDispatchGroupSpec.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = STDispatchGroupSpec.mm; sourceTree = "<group>"; };
 		5FEB750E18F881BE00DD5298 /* AsyncLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AsyncLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,7 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5F1749C118F8A989000615A3 /* libPods.a in Frameworks */,
+				5FC2312618FD9B8E0078FD78 /* libPods-AsyncLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +144,7 @@
 		5FA0BA4218F8789A0075F967 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5FC2312518FD9B8E0078FD78 /* libPods-AsyncLib.a */,
 				5FECCBC618FD8E35001A8EB3 /* libPods-SingleTrack.a */,
 				5F3B374318F8A7480044F692 /* libPods.a */,
 				5FA0BA4318F8789A0075F967 /* Foundation.framework */,
@@ -644,7 +646,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "AsyncLib/AsyncLib-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -688,7 +689,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "AsyncLib/AsyncLib-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
