@@ -29,7 +29,7 @@ static STDispatchBehavior __behavior;
 + (void)safetyCheckForBehavior:(STDispatchBehavior)newBehavior {
     if (self.behavior == STDispatchBehaviorAsynchronous && newBehavior != STDispatchBehaviorAsynchronous) {
         [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"Once you go asynchronous you may not go back!" userInfo:nil] raise];
-    } else if ((STDispatchQueue.queues.count || STDispatchGroup.groups.count) && self.behavior != STDispatchBehaviorAsynchronous && newBehavior == STDispatchBehaviorAsynchronous) {
+    } else if ((dispatch_queues().count || STDispatchGroup.groups.count) && self.behavior != STDispatchBehaviorAsynchronous && newBehavior == STDispatchBehaviorAsynchronous) {
         [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"Attempt to mix asynchronous and synchronous behaviors" userInfo:nil] raise];
     }
 }

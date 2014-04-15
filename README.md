@@ -1,7 +1,7 @@
 SingleTrack
 ===========
 
-Helpers for testing asynchronous behavior with GCD queues
+Overridden for testing asynchronous behavior with GCD queues
 
 [x] dispatch_queue_t
 [x] dispatch_queue_create
@@ -29,4 +29,7 @@ Helpers for testing asynchronous behavior with GCD queues
 [?]dispatch_set_finalizer_f
 [?]dispatch_apply
 [?]dispatch_apply_f
+
+Additional methods:
+dispatch_queues
 

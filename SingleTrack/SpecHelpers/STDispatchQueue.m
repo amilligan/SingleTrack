@@ -2,6 +2,14 @@
 #import "STDispatchQueue.h"
 #import "STDispatch.h"
 
+static NSMutableArray *__queues;
+NSArray *dispatch_queues() {
+    if (!__queues) {
+        __queues = [NSMutableArray array];
+    }
+    return __queues;
+}
+
 @interface STDispatchQueue ()
 
 @property (nonatomic, strong) NSMutableArray *tasks;
@@ -46,7 +54,7 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 @implementation STDispatchQueue
 
 + (void)beforeEach {
-    [self.queues removeAllObjects];
+    [__queues removeAllObjects];
     __mainQueue = nil;
 }
 
@@ -62,9 +70,8 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 }
 
 + (NSMutableArray *)queues {
-    static NSMutableArray *__queues;
     if (!__queues) {
-        __queues = [NSMutableArray array];
+        dispatch_queues();
     }
     return __queues;
 }

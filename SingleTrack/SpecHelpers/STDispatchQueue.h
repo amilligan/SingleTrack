@@ -1,6 +1,15 @@
 #import <Foundation/Foundation.h>
 #import "STDispatchQueue.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+NSArray *dispatch_queues();
+#ifdef __cplusplus
+}
+#endif
+
+
 @interface STDispatchQueue : NSObject
 
 - (void)enqueue:(void (^)())task;
@@ -9,7 +18,6 @@
 
 @interface STDispatchQueue (Collections)
 
-+ (NSArray *)queues;
 - (NSArray *)tasks;
 
 @end

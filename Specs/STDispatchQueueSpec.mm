@@ -22,17 +22,17 @@ describe(@"STDispatchQueue", ^{
 
         beforeEach(^{
             thing = [[AsyncThing alloc] init];
-            STDispatchQueue.queues should_not be_empty;
+            dispatch_queues() should_not be_empty;
         });
 
         it(@"should clear the list of queues", ^{
-            STDispatchQueue.queues should be_empty;
+            dispatch_queues() should be_empty;
         });
     });
 
     describe(@"+queues", ^{
         it(@"should default to empty", ^{
-            STDispatchQueue.queues should be_empty;
+            dispatch_queues() should be_empty;
         });
     });
 
@@ -97,7 +97,7 @@ describe(@"STDispatchQueue", ^{
         subjectAction(^{ thing = [[AsyncThing alloc] init]; });
 
         it(@"should add the queue to the list of instantiated queues", ^{
-            STDispatchQueue.queues should contain(thing.queue);
+            dispatch_queues() should contain(thing.queue);
         });
     });
 
@@ -127,7 +127,7 @@ describe(@"STDispatchQueue", ^{
         });
 
         it(@"should add the queue to the list of queues", ^{
-            STDispatchQueue.queues should contain(dispatch_get_main_queue());
+            dispatch_queues() should contain(dispatch_get_main_queue());
         });
     });
 });
