@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		5FA0BA4418F8789A0075F967 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FA0BA4318F8789A0075F967 /* Foundation.framework */; };
 		5FA0BA4C18F8789A0075F967 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FA0BA4B18F8789A0075F967 /* main.m */; };
-		5FC2312618FD9B8E0078FD78 /* libPods-AsyncLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FC2312518FD9B8E0078FD78 /* libPods-AsyncLib.a */; };
 		5FC4439218FC617B00EE08B7 /* STDispatchSpec.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5FC4439118FC617B00EE08B7 /* STDispatchSpec.mm */; };
 		5FC4439418FC637200EE08B7 /* STDispatchGroupSpec.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5FC4439318FC637200EE08B7 /* STDispatchGroupSpec.mm */; };
 		5FEB751518F881BE00DD5298 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5FEB751318F881BE00DD5298 /* InfoPlist.strings */; };
@@ -27,6 +26,7 @@
 		5FECCBA618FD8D10001A8EB3 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FECCBA418FD8D10001A8EB3 /* Main_iPad.storyboard */; };
 		5FECCBA918FD8D10001A8EB3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FECCBA818FD8D10001A8EB3 /* ViewController.m */; };
 		5FECCBAB18FD8D10001A8EB3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FECCBAA18FD8D10001A8EB3 /* Images.xcassets */; };
+		A0A138D2F04D4F1DBAF8E63E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B200CBEE9FB741D38450C255 /* libPods.a */; };
 		C15C8F8826034780A1786EDC /* libPods-AsyncApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E0ED571FF245456F9604B70A /* libPods-AsyncApp.a */; };
 		E54593B3BADC42159E0A0157 /* libPods-Specs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80CFA9AFFD8848C0B8C99787 /* libPods-Specs.a */; };
 /* End PBXBuildFile section */
@@ -79,7 +79,6 @@
 		9D0B784ECD944709A04C287A /* Pods-Specs.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Specs.xcconfig"; path = "Pods/Pods-Specs.xcconfig"; sourceTree = "<group>"; };
 		B200CBEE9FB741D38450C255 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3CAD9F62D954A52B419B8A5 /* Pods-AsyncApp.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AsyncApp.xcconfig"; path = "Pods/Pods-AsyncApp.xcconfig"; sourceTree = "<group>"; };
-		CB81F19688BE45FD892DC181 /* Pods-AsyncLib.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AsyncLib.xcconfig"; path = "Pods/Pods-AsyncLib.xcconfig"; sourceTree = "<group>"; };
 		E0ED571FF245456F9604B70A /* libPods-AsyncApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AsyncApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -98,7 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5FC2312618FD9B8E0078FD78 /* libPods-AsyncLib.a in Frameworks */,
+				A0A138D2F04D4F1DBAF8E63E /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,7 +125,6 @@
 				5FA0BA4118F8789A0075F967 /* Products */,
 				9D0B784ECD944709A04C287A /* Pods-Specs.xcconfig */,
 				622E893A233543D281D061F0 /* Pods.xcconfig */,
-				CB81F19688BE45FD892DC181 /* Pods-AsyncLib.xcconfig */,
 				C3CAD9F62D954A52B419B8A5 /* Pods-AsyncApp.xcconfig */,
 			);
 			sourceTree = "<group>";
@@ -405,7 +403,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-AsyncLib-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A61233AD203D45649DD4C206 /* Check Pods Manifest.lock */ = {
@@ -608,7 +606,7 @@
 		};
 		5FEB752D18F881BE00DD5298 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CB81F19688BE45FD892DC181 /* Pods-AsyncLib.xcconfig */;
+			baseConfigurationReference = 622E893A233543D281D061F0 /* Pods.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -656,7 +654,7 @@
 		};
 		5FEB752E18F881BE00DD5298 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CB81F19688BE45FD892DC181 /* Pods-AsyncLib.xcconfig */;
+			baseConfigurationReference = 622E893A233543D281D061F0 /* Pods.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";

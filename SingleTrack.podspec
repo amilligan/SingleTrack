@@ -14,8 +14,9 @@ Pod::Spec.new do |s|
 
   s.default_subspec = 'Lib'
 
+  s.public_header_files = 'SingleTrack/*.h'
+
   s.subspec "Lib" do |sub|
-    s.public_header_files = 'SingleTrack/SingleTrack.h'
     s.source_files = 'SingleTrack/SingleTrack.h', 'SingleTrack/Lib/*.{h,mm}'
   end
 
