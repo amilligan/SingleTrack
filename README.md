@@ -3,8 +3,8 @@ SingleTrack
 
 Overridden for testing asynchronous behavior with GCD queues
 
-[x] dispatch_queue_t
-[x] dispatch_queue_create
+[x]dispatch_queue_t
+[x]dispatch_queue_create
 [ ]dispatch_sync
 [x]dispatch_async
 [ ]dispatch_once_t
@@ -18,7 +18,7 @@ Overridden for testing asynchronous behavior with GCD queues
 [ ]dispatch_group_wait
 [ ]dispatch_suspend
 [ ]dispatch_resume
-[ ]dispatch_get_main_queue
+[x]dispatch_get_main_queue
 [ ]dispatch_get_global_queue
 [ ]dispatch_semaphore_t
 [ ]dispatch_semaphore_create
@@ -31,6 +31,6 @@ Overridden for testing asynchronous behavior with GCD queues
 [?]dispatch_apply_f
 
 Additional methods:
-dispatch_queues
-dispatch_groups
+[x]dispatch_queues
+[x]dispatch_groups
 
