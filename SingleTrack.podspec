@@ -16,13 +16,13 @@ Pod::Spec.new do |s|
 
   s.subspec "Lib" do |sub|
     sub.public_header_files = 'SingleTrack/SingleTrack.h'
-    sub.source_files = 'SingleTrack/SingleTrack.h', 'SingleTrack/Lib/*.{h,mm}'
+    sub.source_files = 'SingleTrack/SingleTrack.h', 'SingleTrack/*.{h,mm}'
   end
 
   s.subspec "SpecHelpers" do |sub|
     sub.dependency 'SingleTrack/Lib'
-    sub.public_header_files = 'SingleTrack/SpecHelpers.h', 'SingleTrack/SpecHelpers/*.h'
-    sub.source_files = 'SingleTrack/SpecHelpers.h', 'SingleTrack/SpecHelpers/*.{h,m,mm}'
+    sub.public_header_files = 'SingleTrack/SpecHelpers/*.h'
+    sub.source_files = 'SingleTrack/SpecHelpers/*.{h,m,mm}'
   end
 end
 

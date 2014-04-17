@@ -1,4 +1,4 @@
-#import "SingleTrack.h"
+#import "SingleTrack/SpecHelpers.h"
 #import "STDispatch.h"
 
 using namespace Cedar::Matchers;
