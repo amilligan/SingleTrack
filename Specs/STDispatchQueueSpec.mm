@@ -8,9 +8,10 @@ SPEC_BEGIN(STDispatchQueueSpec)
 
 describe(@"STDispatchQueue", ^{
     __block STDispatchQueue *queue;
+    const char *label = "my queue";
 
     beforeEach(^{
-        queue = [[STDispatchQueue alloc] init];
+        queue = [[STDispatchQueue alloc] initWithLabel:label attr:DISPATCH_QUEUE_CONCURRENT];
     });
 
     describe(@"+beforeEach", ^{
@@ -31,6 +32,34 @@ describe(@"STDispatchQueue", ^{
     describe(@"+queues", ^{
         it(@"should default to empty", ^{
             dispatch_queues() should be_empty;
+        });
+    });
+
+    describe(@"-label", ^{
+        it(@"should be the given label, NSString-ified", ^{
+            queue.label should equal([NSString stringWithCString:label encoding:NSUTF8StringEncoding]);
+        });
+    });
+
+    describe(@"-isConcurrent", ^{
+        context(@"when initialized with DISPATCH_QUEUE_CONCURRENT", ^{
+            beforeEach(^{
+                queue = [[STDispatchQueue alloc] initWithLabel:"queue1" attr:DISPATCH_QUEUE_CONCURRENT];
+            });
+
+            it(@"should be true", ^{
+                queue.isConcurrent should be_truthy;
+            });
+        });
+
+        context(@"when initialized with DISPATCH_QUEUE_SERIAL", ^{
+            beforeEach(^{
+                queue = [[STDispatchQueue alloc] initWithLabel:"queue1" attr:DISPATCH_QUEUE_SERIAL];
+            });
+
+            it(@"should not be true", ^{
+                queue.isConcurrent should_not be_truthy;
+            });
         });
     });
 
@@ -119,7 +148,10 @@ describe(@"STDispatchQueue", ^{
 
         subjectAction(^{ queue = dispatch_get_main_queue(); });
 
-        it(@"should return a serial queue", PENDING);
+        it(@"should return a serial queue", ^{
+            ((STDispatchQueue *)queue).isConcurrent should_not be_truthy;
+        });
+
         it(@"should always return the same queue", ^{
             dispatch_get_main_queue() should be_same_instance_as(queue);
         });

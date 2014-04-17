@@ -12,6 +12,10 @@ NSArray *dispatch_queues();
 
 @interface STDispatchQueue : NSObject
 
+@property (nonatomic, strong, readonly) NSString *label;
+@property (nonatomic, assign, readonly) BOOL isConcurrent;
+
+- (instancetype)initWithLabel:(const char *)label attr:(dispatch_queue_attr_t)attr;
 - (void)enqueue:(void (^)())task;
 
 @end

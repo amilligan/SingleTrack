@@ -12,6 +12,8 @@ NSArray *dispatch_queues() {
 
 @interface STDispatchQueue ()
 
+@property (nonatomic, strong) NSString *label;
+@property (nonatomic, assign, readwrite) BOOL isConcurrent;
 @property (nonatomic, strong) NSMutableArray *tasks;
 
 + (NSMutableArray *)queues;
@@ -23,7 +25,7 @@ static dispatch_queue_t st_dispatch_queue_create(const char *label, dispatch_que
     if (STDispatch.behavior == STDispatchBehaviorAsynchronous) {
         return real_dispatch_queue_create(label, attr);
     } else {
-        STDispatchQueue *queue = [[STDispatchQueue alloc] init];
+        STDispatchQueue *queue = [[STDispatchQueue alloc] initWithLabel:label attr:attr];
         [STDispatchQueue.queues addObject:queue];
         return (dispatch_queue_t)queue;
     }
@@ -74,11 +76,17 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     return __queues;
 }
 
-- (instancetype)init {
+- (instancetype)initWithLabel:(const char *)label attr:(dispatch_queue_attr_t)attr {
     if (self = [super init]) {
+        self.label = [NSString stringWithCString:label encoding:NSUTF8StringEncoding];
+        self.isConcurrent = attr == DISPATCH_QUEUE_CONCURRENT;
         self.tasks = [NSMutableArray array];
     }
     return self;
+}
+
+- (instancetype)init {
+    [self doesNotRecognizeSelector:_cmd]; return nil;
 }
 
 - (void)enqueue:(void (^)())task {
