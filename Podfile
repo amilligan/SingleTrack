@@ -8,7 +8,7 @@ target 'AsyncApp' do
 end
 
 target 'Specs', exclusive: true do
-  pod 'Cedar'
+  pod 'Cedar', git: 'https://github.com/orchardpie/cedar'
   pod 'SingleTrack/SpecHelpers', path: '.'
 end
 

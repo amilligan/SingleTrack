@@ -1,5 +1,5 @@
 PODS:
-  - Cedar (0.9.5)
+  - Cedar (0.9.6)
   - SingleTrack (0.1):
     - SingleTrack/Lib
   - SingleTrack/Lib (0.1)
@@ -7,16 +7,18 @@ PODS:
     - SingleTrack/Lib
 
 DEPENDENCIES:
-  - Cedar
+  - Cedar (from `https://github.com/orchardpie/cedar`)
   - SingleTrack (from `.`)
   - SingleTrack/SpecHelpers (from `.`)
 
 EXTERNAL SOURCES:
+  Cedar:
+    :git: https://github.com/orchardpie/cedar
   SingleTrack:
     :path: .
 
 SPEC CHECKSUMS:
-  Cedar: 16cbb75084031aa41304cdeb0d0c8319c1af1cae
+  Cedar: 0a470fd062666218c3ac1a38503584d1e9a68b88
   SingleTrack: ae50da8841caf2af171886434012005177e4804b
 
 COCOAPODS: 0.32.1
