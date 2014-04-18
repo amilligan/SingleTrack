@@ -59,6 +59,37 @@ static dispatch_queue_t st_dispatch_get_main_queue(void) {
     }
 }
 
+static id __highPriorityQueue;
+static id __defaultPriorityQueue;
+static id __lowPriorityQueue;
+static id __backgroundPriorityQueue;
+static dispatch_queue_t build_global_queue(const char *label, id __strong *queue) {
+    if (!*queue) {
+        *queue = dispatch_queue_create(label, DISPATCH_QUEUE_CONCURRENT);
+    }
+    return *queue;
+}
+
+static dispatch_queue_t (*real_dispatch_get_global_queue)(dispatch_queue_priority_t, unsigned long);
+static dispatch_queue_t st_dispatch_get_global_queue(dispatch_queue_priority_t priority, unsigned long flags) {
+    if (STDispatch.behavior == STDispatchBehaviorAsynchronous) {
+        return real_dispatch_get_global_queue(priority, flags);
+    } else {
+        switch (priority) {
+            case DISPATCH_QUEUE_PRIORITY_HIGH:
+                return build_global_queue("HIGH PRIORITY QUEUE", &__highPriorityQueue);
+            case DISPATCH_QUEUE_PRIORITY_DEFAULT:
+                return build_global_queue("DEFAULT PRIORITY QUEUE", &__defaultPriorityQueue);
+            case DISPATCH_QUEUE_PRIORITY_LOW:
+                return build_global_queue("LOW PRIORITY QUEUE", &__lowPriorityQueue);
+            case DISPATCH_QUEUE_PRIORITY_BACKGROUND:
+                return build_global_queue("BACKGROUND PRIORITY QUEUE", &__backgroundPriorityQueue);
+            default:
+                @throw [NSString stringWithFormat:@"Cannot create global queue with unknown priority: %ld", priority];
+        }
+    }
+}
+
 static void (*real_dispatch_async)(dispatch_queue_t, dispatch_block_t);
 static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     if (STDispatch.behavior == STDispatchBehaviorAsynchronous) {
@@ -72,7 +103,11 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 
 + (void)beforeEach {
     [__queues removeAllObjects];
-    __mainQueue = nil;
+    __mainQueue =
+    __highPriorityQueue =
+    __defaultPriorityQueue =
+    __lowPriorityQueue =
+    __backgroundPriorityQueue = nil;
 }
 
 + (void)initialize {
@@ -81,6 +116,9 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 
     real_dispatch_get_main_queue = proxy_dispatch_get_main_queue;
     proxy_dispatch_get_main_queue = st_dispatch_get_main_queue;
+
+    real_dispatch_get_global_queue = proxy_dispatch_get_global_queue;
+    proxy_dispatch_get_global_queue = st_dispatch_get_global_queue;
 
     real_dispatch_async = proxy_dispatch_async;
     proxy_dispatch_async = st_dispatch_async;

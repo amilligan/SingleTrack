@@ -19,7 +19,7 @@ Overridden for testing asynchronous behavior with GCD queues
 [ ]dispatch_suspend
 [ ]dispatch_resume
 [x]dispatch_get_main_queue
-[ ]dispatch_get_global_queue
+[x]dispatch_get_global_queue
 [ ]dispatch_semaphore_t
 [ ]dispatch_semaphore_create
 [ ]dispatch_semaphore_signal

@@ -7,6 +7,9 @@ extern dispatch_queue_t (*proxy_dispatch_queue_create)(const char *, dispatch_qu
 #define dispatch_get_main_queue proxy_dispatch_get_main_queue
 extern dispatch_queue_t (*proxy_dispatch_get_main_queue)();
 
+#define dispatch_get_global_queue proxy_dispatch_get_global_queue
+extern dispatch_queue_t (*proxy_dispatch_get_global_queue)(dispatch_queue_priority_t, unsigned long);
+
 #define dispatch_async proxy_dispatch_async
 extern void (*proxy_dispatch_async)(dispatch_queue_t, dispatch_block_t);
 

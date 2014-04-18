@@ -8,4 +8,6 @@ static dispatch_queue_t dispatch_get_main_queue_f(void) {
 }
 dispatch_queue_t (*proxy_dispatch_get_main_queue)(void) = dispatch_get_main_queue_f;
 
+dispatch_queue_t (*proxy_dispatch_get_global_queue)(dispatch_queue_priority_t, unsigned long) = dispatch_get_global_queue;
+
 void (*proxy_dispatch_async)(dispatch_queue_t, dispatch_block_t) = dispatch_async;

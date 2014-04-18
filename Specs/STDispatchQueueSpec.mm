@@ -329,7 +329,60 @@ describe(@"STDispatchQueue", ^{
         });
 
         it(@"should add the queue to the list of queues", ^{
-            dispatch_queues() should contain(dispatch_get_main_queue());
+            dispatch_queues() should contain(queue);
+        });
+    });
+
+    describe(@"dispatch_get_global_queue", ^{
+        __block dispatch_queue_t queue;
+        __block dispatch_queue_priority_t priority;
+
+        subjectAction(^{ queue = dispatch_get_global_queue(priority, 0); });
+
+        beforeEach(^{
+            priority = DISPATCH_QUEUE_PRIORITY_DEFAULT;
+        });
+
+        it(@"should return a different queue for each priority", ^{
+            NSSet *set = [NSSet setWithObjects:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
+                          , dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+                          , dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
+                          , dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
+                          , nil];
+            set.count should equal(4);
+        });
+
+        [@{
+           @DISPATCH_QUEUE_PRIORITY_HIGH: @"HIGH"
+            , @DISPATCH_QUEUE_PRIORITY_DEFAULT: @"DEFAULT"
+            , @DISPATCH_QUEUE_PRIORITY_LOW: @"LOW"
+            , @DISPATCH_QUEUE_PRIORITY_BACKGROUND: @"BACKGROUND"
+        } enumerateKeysAndObjectsUsingBlock:^(NSNumber *priorityObj, NSString *name, BOOL *stop) {
+            context([NSString stringWithFormat:@"with priority set to %@", name], ^{
+                beforeEach(^{
+                    priority = priorityObj.intValue;
+                });
+
+                it(@"should return a concurrent queue", ^{
+                    ((STDispatchQueue *)queue).isConcurrent should be_truthy;
+                });
+
+                it(@"should always return the same queue", ^{
+                    dispatch_get_global_queue(priority, 0) should be_same_instance_as(queue);
+                });
+
+                it(@"should add the queue to the list of queues", ^{
+                    dispatch_queues() should contain(queue);
+                });
+            });
+        }];
+
+        context(@"with an unknown priority", ^{
+            beforeEach(^{
+                priority = -3;
+            });
+
+            itShouldRaiseException();
         });
     });
 });
