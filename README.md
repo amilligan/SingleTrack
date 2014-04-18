@@ -34,3 +34,7 @@ Additional methods:
 [x]dispatch_queues
 [x]dispatch_groups
 
+[x]dispatch_execute_next_task // SERIAL
+[x]dispatch_execute_task_at_index // CONCURRENT
+[x]dispatch_execute_all_tasks // SERIAL or CONCURRENT
+

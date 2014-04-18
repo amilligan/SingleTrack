@@ -2,6 +2,19 @@
 #import "STDispatchQueue.h"
 #import "STDispatch.h"
 
+@interface STDispatchQueue ()
+
+@property (nonatomic, strong) NSString *label;
+@property (nonatomic, assign, readwrite) BOOL isConcurrent;
+@property (nonatomic, strong) NSMutableArray *tasks;
+
++ (NSMutableArray *)queues;
+- (void)executeNextTask;
+- (void)executeTaskAtIndex:(uint8_t)index;
+- (void)executeAllTasks;
+
+@end
+
 static NSMutableArray *__queues;
 NSArray *dispatch_queues() {
     if (!__queues) {
@@ -10,15 +23,17 @@ NSArray *dispatch_queues() {
     return __queues;
 }
 
-@interface STDispatchQueue ()
+void dispatch_execute_next_task(dispatch_queue_t queue) {
+    [((STDispatchQueue *)queue) executeNextTask];
+}
 
-@property (nonatomic, strong) NSString *label;
-@property (nonatomic, assign, readwrite) BOOL isConcurrent;
-@property (nonatomic, strong) NSMutableArray *tasks;
+void dispatch_execute_task_at_index(dispatch_queue_t queue, uint8_t index) {
+    [((STDispatchQueue *)queue) executeTaskAtIndex:index];
+}
 
-+ (NSMutableArray *)queues;
-
-@end
+void dispatch_execute_all_tasks(dispatch_queue_t queue) {
+    [((STDispatchQueue *)queue) executeAllTasks];
+}
 
 static dispatch_queue_t (*real_dispatch_queue_create)(const char *, dispatch_queue_attr_t);
 static dispatch_queue_t st_dispatch_queue_create(const char *label, dispatch_queue_attr_t attr) {
@@ -94,6 +109,46 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
         task();
     } else if (STDispatch.behavior == STDispatchBehaviorManual) {
         [self.tasks addObject:task];
+    }
+}
+
+- (void)executeNextTask {
+    if (self.isConcurrent) {
+        @throw [NSString stringWithFormat:@"Cannot dispatch_execute_next_task on concurrent queue: %@", self.label];
+    } else if (!self.tasks.count) {
+        @throw [NSString stringWithFormat:@"Cannot dispatch_execute_next_task on empty queue '%@' (did you mean to set the dispatch behavior to manual?)", self.label];
+    } else {
+        dispatch_block_t task = self.tasks.firstObject;
+        task();
+        [self.tasks removeObjectAtIndex:0];
+    }
+}
+
+- (void)executeTaskAtIndex:(uint8_t)index {
+    if (!self.isConcurrent) {
+        @throw [NSString stringWithFormat:@"Cannot dispatch_execute_task_at_index on serial queue: %@", self.label];
+    } else if (index >= self.tasks.count) {
+        @throw [NSString stringWithFormat:@"Cannot dispatch_execute_task_at_index on out of bounds index (%d) in queue '%@'", index, self.label];
+    } else {
+        dispatch_block_t task = [self.tasks objectAtIndex:index];
+        task();
+        [self.tasks removeObjectAtIndex:index];
+    }
+}
+
+- (void)executeAllTasks {
+    if (self.isConcurrent) {
+        while (self.tasks.count) {
+            uint32_t index = arc4random_uniform((uint32_t)self.tasks.count);
+            dispatch_block_t task = self.tasks[index];
+            task();
+            [self.tasks removeObjectAtIndex:index];
+        }
+    } else {
+        [self.tasks enumerateObjectsUsingBlock:^(dispatch_block_t task, NSUInteger idx, BOOL *stop) {
+            task();
+        }];
+        [self.tasks removeAllObjects];
     }
 }
 
