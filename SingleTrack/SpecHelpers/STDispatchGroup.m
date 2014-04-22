@@ -10,11 +10,12 @@ NSArray *dispatch_groups() {
     return __groups;
 }
 
-@interface STDispatchGroup ()
+@interface STDispatchGroup : NSObject
 
 @property (nonatomic, strong) NSMutableArray *tasks;
 
 + (NSMutableArray *)groups;
+- (void)enqueue:(dispatch_block_t)task;
 
 @end
 
@@ -65,7 +66,7 @@ void st_dispatch_group_async(dispatch_group_t group, dispatch_queue_t queue, dis
     return self;
 }
 
-- (void)enqueue:(void (^)())task {
+- (void)enqueue:(dispatch_block_t)task {
     [self.tasks addObject:task];
 }
 

@@ -7,7 +7,7 @@ SPEC_BEGIN(STDispatchQueueSpec)
 
 describe(@"STDispatchQueue", ^{
     describe(@"+beforeEach", ^{
-        subjectAction(^{ [[STDispatchQueue class] performSelector:@selector(beforeEach)]; });
+        subjectAction(^{ [NSClassFromString(@"STDispatchQueue") performSelector:@selector(beforeEach)]; });
 
         beforeEach(^{
             dispatch_queue_create("a queue", DISPATCH_QUEUE_CONCURRENT);
@@ -106,7 +106,7 @@ describe(@"STDispatchQueue", ^{
 
             context(@"with no tasks in the queue", ^{
                 beforeEach(^{
-                    ((STDispatchQueue *)queue).tasks should be_empty;
+                    dispatch_queue_tasks(queue) should be_empty;
                 });
 
                 itShouldRaiseException();
@@ -125,7 +125,7 @@ describe(@"STDispatchQueue", ^{
                 });
 
                 it(@"should remove the executed task from the queue", ^{
-                    ((STDispatchQueue *)queue).tasks.count should equal(1);
+                    dispatch_queue_tasks(queue).count should equal(1);
                 });
             });
         });
@@ -157,7 +157,7 @@ describe(@"STDispatchQueue", ^{
 
             context(@"with no tasks in the queue", ^{
                 beforeEach(^{
-                    ((STDispatchQueue *)queue).tasks should be_empty;
+                    dispatch_queue_tasks(queue) should be_empty;
                 });
 
                 itShouldRaiseException();
@@ -182,7 +182,7 @@ describe(@"STDispatchQueue", ^{
                     });
 
                     it(@"should remove the executed task from the queue", ^{
-                        ((STDispatchQueue *)queue).tasks should_not contain(block1);
+                        dispatch_queue_tasks(queue) should_not contain(block1);
                     });
                 });
 
@@ -225,7 +225,7 @@ describe(@"STDispatchQueue", ^{
             });
 
             it(@"should remove all tasks from the queue", ^{
-                ((STDispatchQueue *)queue).tasks should be_empty;
+                dispatch_queue_tasks(queue) should be_empty;
             });
 
             it(@"should run the tasks in nondeterministic order", ^{
@@ -253,7 +253,7 @@ describe(@"STDispatchQueue", ^{
             });
 
             it(@"should remove all tasks from the queue", ^{
-                ((STDispatchQueue *)queue).tasks should be_empty;
+                dispatch_queue_tasks(queue) should be_empty;
             });
 
             it(@"should run the tasks in order", ^{
@@ -268,7 +268,7 @@ describe(@"STDispatchQueue", ^{
         subjectAction(^{ queue = dispatch_get_main_queue(); });
 
         it(@"should return a serial queue", ^{
-            ((STDispatchQueue *)queue).isConcurrent should_not be_truthy;
+            dispatch_queue_is_concurrent(queue) should_not be_truthy;
         });
 
         it(@"should always return the same queue", ^{
@@ -311,7 +311,7 @@ describe(@"STDispatchQueue", ^{
                 });
 
                 it(@"should return a concurrent queue", ^{
-                    ((STDispatchQueue *)queue).isConcurrent should be_truthy;
+                    dispatch_queue_is_concurrent(queue) should be_truthy;
                 });
 
                 it(@"should always return the same queue", ^{

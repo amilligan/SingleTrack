@@ -1,5 +1,4 @@
 #import "SingleTrack/SpecHelpers.h"
-#import "AsyncThing.h"
 
 using namespace Cedar::Matchers;
 using namespace Cedar::Doubles;
@@ -7,19 +6,16 @@ using namespace Cedar::Doubles;
 SPEC_BEGIN(STDispatchGroupSpec)
 
 describe(@"STDispatchGroup", ^{
-    __block STDispatchGroup *group;
+    __block dispatch_group_t group;
 
     beforeEach(^{
-        group = [[STDispatchGroup alloc] init];
+        group = dispatch_group_create();
     });
 
     describe(@"+beforeEach", ^{
-        __block AsyncThing *thing;
-
-        subjectAction(^{ [[STDispatchGroup class] performSelector:@selector(beforeEach)]; });
+        subjectAction(^{ [NSClassFromString(@"STDispatchGroup") performSelector:@selector(beforeEach)]; });
 
         beforeEach(^{
-            thing = [[AsyncThing alloc] init];
             dispatch_groups() should_not be_empty;
         });
 
@@ -28,50 +24,29 @@ describe(@"STDispatchGroup", ^{
         });
     });
 
-    describe(@"-enqueue", ^{
-        __block NSInteger value;
-        NSInteger newValue = 7;
-        id block = ^{ value = newValue; };
-
-        subjectAction(^{ [group enqueue:block]; });
-
-        beforeEach(^{
-            value = 0;
-        });
-
-        it(@"should add the block to the list of blocks for the group", ^{
-            group.tasks should contain(block);
-        });
-    });
-
     describe(@"dispatch_group_create", ^{
-        __block AsyncThing *thing;
+        __block dispatch_group_t group;
 
-        // AsyncThing instantiates a group in the initializer
-        subjectAction(^{ thing = [[AsyncThing alloc] init]; });
+        subjectAction(^{ group = dispatch_group_create(); });
 
         it(@"should add the group to the list of instantiated groups", ^{
-            dispatch_groups() should contain(thing.group);
+            dispatch_groups() should contain(group);
         });
     });
 
     describe(@"dispatch_group_async", ^{
-        __block AsyncThing *thing;
-        NSInteger newValue = 9;
+        __block dispatch_queue_t queue;
+        id task = ^{};
 
-        subjectAction(^{ [thing setValueGroupAsync:newValue]; });
+        subjectAction(^{ dispatch_group_async(group, queue, task); });
 
         beforeEach(^{
             STDispatch.behavior = STDispatchBehaviorManual;
-            thing = [[AsyncThing alloc] init];
+            queue = dispatch_queue_create("a queue", DISPATCH_QUEUE_CONCURRENT);
         });
 
         it(@"should enqueue the block on the queue", ^{
-            [(id)thing.queue tasks] should_not be_empty;
-        });
-
-        it(@"should add the block to the group", ^{
-            [(id)thing.group tasks] should_not be_empty;
+            dispatch_queue_tasks(queue) should contain(task);
         });
     });
 });
