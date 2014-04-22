@@ -1,5 +1,4 @@
 #import "SingleTrack/SpecHelpers.h"
-#import "AsyncThing.h"
 
 using namespace Cedar::Matchers;
 using namespace Cedar::Doubles;
@@ -7,20 +6,11 @@ using namespace Cedar::Doubles;
 SPEC_BEGIN(STDispatchQueueSpec)
 
 describe(@"STDispatchQueue", ^{
-    __block STDispatchQueue *queue;
-    const char *label = "my queue";
-
-    beforeEach(^{
-        queue = [[STDispatchQueue alloc] initWithLabel:label attr:DISPATCH_QUEUE_CONCURRENT];
-    });
-
     describe(@"+beforeEach", ^{
-        __block AsyncThing *thing;
-
         subjectAction(^{ [[STDispatchQueue class] performSelector:@selector(beforeEach)]; });
 
         beforeEach(^{
-            thing = [[AsyncThing alloc] init];
+            dispatch_queue_create("a queue", DISPATCH_QUEUE_CONCURRENT);
             dispatch_queues() should_not be_empty;
         });
 
@@ -29,46 +19,29 @@ describe(@"STDispatchQueue", ^{
         });
     });
 
-    describe(@"+queues", ^{
+    describe(@"dispatch_queues", ^{
         it(@"should default to empty", ^{
             dispatch_queues() should be_empty;
         });
     });
 
-    describe(@"-label", ^{
-        it(@"should be the given label, NSString-ified", ^{
-            queue.label should equal([NSString stringWithCString:label encoding:NSUTF8StringEncoding]);
+    describe(@"dispatch_queue_create", ^{
+        __block dispatch_queue_t queue;
+
+        subjectAction(^{ queue = dispatch_queue_create("a queue", DISPATCH_QUEUE_CONCURRENT); });
+
+        it(@"should add the queue to the list of instantiated queues", ^{
+            dispatch_queues() should contain(queue);
         });
     });
 
-    describe(@"-isConcurrent", ^{
-        context(@"when initialized with DISPATCH_QUEUE_CONCURRENT", ^{
-            beforeEach(^{
-                queue = [[STDispatchQueue alloc] initWithLabel:"queue1" attr:DISPATCH_QUEUE_CONCURRENT];
-            });
-
-            it(@"should be true", ^{
-                queue.isConcurrent should be_truthy;
-            });
-        });
-
-        context(@"when initialized with DISPATCH_QUEUE_SERIAL", ^{
-            beforeEach(^{
-                queue = [[STDispatchQueue alloc] initWithLabel:"queue1" attr:DISPATCH_QUEUE_SERIAL];
-            });
-
-            it(@"should not be true", ^{
-                queue.isConcurrent should_not be_truthy;
-            });
-        });
-    });
-
-    describe(@"-enqueue", ^{
+    describe(@"dispatch_async", ^{
+        __block dispatch_queue_t queue;
         __block NSInteger value;
         NSInteger newValue = 7;
         id block = ^{ value = newValue; };
 
-        subjectAction(^{ [queue enqueue:block]; });
+        subjectAction(^{ dispatch_async(queue, block); });
 
         beforeEach(^{
             value = 0;
@@ -77,6 +50,7 @@ describe(@"STDispatchQueue", ^{
         context(@"with synchronous dispatch behavior (the default)", ^{
             beforeEach(^{
                 STDispatch.behavior = STDispatchBehaviorSynchronous;
+                queue = dispatch_queue_create("a queue", DISPATCH_QUEUE_CONCURRENT);
             });
 
             it(@"should execute immediately", ^{
@@ -84,13 +58,14 @@ describe(@"STDispatchQueue", ^{
             });
 
             it(@"should not add the block to the list of tasks waiting for execution", ^{
-                queue.tasks should be_empty;
+                dispatch_queue_tasks(queue) should be_empty;
             });
         });
 
         context(@"with manual dispatch behavior", ^{
             beforeEach(^{
                 STDispatch.behavior = STDispatchBehaviorManual;
+                queue = dispatch_queue_create("a queue", DISPATCH_QUEUE_CONCURRENT);
             });
 
             it(@"should not execute immediately", ^{
@@ -98,50 +73,22 @@ describe(@"STDispatchQueue", ^{
             });
 
             it(@"should add the block to the list of tasks waiting for execution", ^{
-                queue.tasks should contain(block);
+                dispatch_queue_tasks(queue) should contain(block);
             });
         });
 
         context(@"with asynchronous (multi-thread) dispatch behavior", ^{
             beforeEach(^{
                 STDispatch.behavior = STDispatchBehaviorAsynchronous;
+                queue = dispatch_queue_create("a queue", DISPATCH_QUEUE_CONCURRENT);
             });
 
             it(@"should not execute immediately", ^{
                 value should_not equal(newValue);
             });
-
-            it(@"should not add the block to the list of tasks waiting for execution", ^{
-                queue.tasks should be_empty;
-            });
         });
     });
 
-    describe(@"dispatch_queue_create", ^{
-        __block AsyncThing *thing;
-
-        // AsyncThing instantiates a queue in the initializer
-        subjectAction(^{ thing = [[AsyncThing alloc] init]; });
-
-        it(@"should add the queue to the list of instantiated queues", ^{
-            dispatch_queues() should contain(thing.queue);
-        });
-    });
-
-    describe(@"dispatch_async", ^{
-        __block AsyncThing *thing;
-
-        subjectAction(^{ [thing setValueAsync:7]; });
-
-        beforeEach(^{
-            STDispatch.behavior = STDispatchBehaviorManual;
-            thing = [[AsyncThing alloc] init];
-        });
-
-        it(@"should enqueue the provided block on the queue", ^{
-            [(id)thing.queue tasks] should_not be_empty;
-        });
-    });
 
     describe(@"dispatch_execute_next_task", ^{
         __block dispatch_queue_t queue;

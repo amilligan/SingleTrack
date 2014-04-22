@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F1339CB1906A08A003F15AC /* AsyncThingSpec.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5F1339CA1906A08A003F15AC /* AsyncThingSpec.mm */; };
+		5F1339CC1906A1D6003F15AC /* STDispatchQueueSpec.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5FEB753618F883D300DD5298 /* STDispatchQueueSpec.mm */; };
 		5FA0BA4418F8789A0075F967 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FA0BA4318F8789A0075F967 /* Foundation.framework */; };
 		5FA0BA4C18F8789A0075F967 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FA0BA4B18F8789A0075F967 /* main.m */; };
 		5FC4439218FC617B00EE08B7 /* STDispatchSpec.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5FC4439118FC617B00EE08B7 /* STDispatchSpec.mm */; };
@@ -14,7 +16,6 @@
 		5FEB751518F881BE00DD5298 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5FEB751318F881BE00DD5298 /* InfoPlist.strings */; };
 		5FEB753418F8823800DD5298 /* AsyncThing.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FEB753218F8823800DD5298 /* AsyncThing.h */; };
 		5FEB753518F8823800DD5298 /* AsyncThing.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FEB753318F8823800DD5298 /* AsyncThing.m */; };
-		5FEB753718F883D300DD5298 /* STDispatchQueueSpec.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5FEB753618F883D300DD5298 /* STDispatchQueueSpec.mm */; };
 		5FEB753A18F883ED00DD5298 /* AsyncLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FEB750E18F881BE00DD5298 /* AsyncLib.framework */; };
 		5FECCB9018FD8D0F001A8EB3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FA0BA4318F8789A0075F967 /* Foundation.framework */; };
 		5FECCB9218FD8D0F001A8EB3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FECCB9118FD8D0F001A8EB3 /* CoreGraphics.framework */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		1C312FAC6F7C4B6BBE37F139 /* libPods-AsyncLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AsyncLib.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F1339CA1906A08A003F15AC /* AsyncThingSpec.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AsyncThingSpec.mm; sourceTree = "<group>"; };
 		5F3B374318F8A7480044F692 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = Pods/build/Debug/libPods.a; sourceTree = "<group>"; };
 		5FA0BA4018F8789A0075F967 /* Specs */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Specs; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FA0BA4318F8789A0075F967 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -164,6 +166,7 @@
 				5FEB753618F883D300DD5298 /* STDispatchQueueSpec.mm */,
 				5FC4439318FC637200EE08B7 /* STDispatchGroupSpec.mm */,
 				5FA0BA4718F8789A0075F967 /* Supporting Files */,
+				5F1339CA1906A08A003F15AC /* AsyncThingSpec.mm */,
 			);
 			path = Specs;
 			sourceTree = "<group>";
@@ -444,9 +447,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				5FC4439218FC617B00EE08B7 /* STDispatchSpec.mm in Sources */,
+				5F1339CB1906A08A003F15AC /* AsyncThingSpec.mm in Sources */,
+				5F1339CC1906A1D6003F15AC /* STDispatchQueueSpec.mm in Sources */,
 				5FC4439418FC637200EE08B7 /* STDispatchGroupSpec.mm in Sources */,
 				5FA0BA4C18F8789A0075F967 /* main.m in Sources */,
-				5FEB753718F883D300DD5298 /* STDispatchQueueSpec.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
