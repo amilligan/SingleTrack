@@ -33,6 +33,7 @@ Overridden for testing asynchronous behavior with GCD queues
 Additional methods:
 [x]dispatch_queues
 [x]dispatch_groups
+[x]dispatch_queue_tasks
 
 [x]dispatch_execute_next_task // SERIAL
 [x]dispatch_execute_task_at_index // CONCURRENT

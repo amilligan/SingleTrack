@@ -23,6 +23,14 @@ NSArray *dispatch_queues() {
     return __queues;
 }
 
+NSArray *dispatch_queue_tasks(dispatch_queue_t queue) {
+    if (STDispatch.behavior == STDispatchBehaviorAsynchronous) {
+        @throw [NSString stringWithFormat:@"Cannot enumerate tasks for queue when dispatch behavior is asynchronous"];
+    } else {
+        return ((STDispatchQueue *)queue).tasks;
+    }
+}
+
 void dispatch_execute_next_task(dispatch_queue_t queue) {
     [((STDispatchQueue *)queue) executeNextTask];
 }
