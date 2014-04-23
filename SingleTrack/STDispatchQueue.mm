@@ -11,3 +11,4 @@ dispatch_queue_t (*proxy_dispatch_get_main_queue)(void) = dispatch_get_main_queu
 dispatch_queue_t (*proxy_dispatch_get_global_queue)(dispatch_queue_priority_t, unsigned long) = dispatch_get_global_queue;
 
 void (*proxy_dispatch_async)(dispatch_queue_t, dispatch_block_t) = dispatch_async;
+void (*proxy_dispatch_sync)(dispatch_queue_t, dispatch_block_t) = dispatch_sync;

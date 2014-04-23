@@ -89,6 +89,212 @@ describe(@"STDispatchQueue", ^{
         });
     });
 
+    describe(@"dispatch_sync", ^{
+        __block dispatch_queue_t queue;
+        __block dispatch_block_t task;
+        __block NSMutableString *result;
+
+        subjectAction(^{ dispatch_sync(queue, task); });
+
+        beforeEach(^{
+            STDispatch.behavior = STDispatchBehaviorManual;
+            result = [NSMutableString string];
+
+            task = [^{ [result appendString:@"T"]; } copy];
+        });
+
+        context(@"on the main queue", ^{
+            beforeEach(^{
+                queue = dispatch_get_main_queue();
+            });
+
+            itShouldRaiseException();
+        });
+
+        context(@"on a serial queue", ^{
+            beforeEach(^{
+                queue = dispatch_queue_create("a serial queue", DISPATCH_QUEUE_SERIAL);
+            });
+
+            context(@"that has no other tasks", ^{
+                beforeEach(^{
+                    dispatch_queue_tasks(queue) should be_empty;
+                });
+
+                it(@"should execute the task immediately", ^{
+                    result should equal(@"T");
+                });
+
+                context(@"when the task dispatches, to the same queue, a second task", ^{
+                    id secondTask = ^{ [result appendString:@"t"]; };
+
+                    context(@"asynchronously", ^{
+                        beforeEach(^{
+                            task = [^{
+                                [result appendString:@"T"];
+                                dispatch_async(queue, secondTask);
+                            } copy];
+                        });
+
+                        it(@"should execute the synchronous task", ^{
+                            result should equal(@"T");
+                        });
+
+                        it(@"should enqueue the asynchronous task", ^{
+                            dispatch_queue_tasks(queue) should contain(secondTask);
+                        });
+                    });
+
+                    context(@"synchronously", ^{
+                        beforeEach(^{
+                            task = [^{ dispatch_sync(queue, secondTask); } copy];
+                        });
+
+                        itShouldRaiseException();  // DEADLOCK
+                    });
+                });
+            });
+
+            context(@"that has previously queued tasks", ^{
+                context(@"none of which dispatch tasks to the same queue", ^{
+                    beforeEach(^{
+                        dispatch_async(queue, ^{ [result appendString:@"0"]; });
+                        dispatch_async(queue, ^{ [result appendString:@"1"]; });
+                    });
+
+                    it(@"should execute the previously enqueued tasks, in FIFO order, before executing the synchronous task", ^{
+                        result should equal(@"01T");
+                    });
+                });
+
+                context(@"one of which asynchronously dispatches another task to the same queue", ^{
+                    beforeEach(^{
+                        dispatch_async(queue, ^{
+                            [result appendString:@"0"];
+                            dispatch_async(queue, ^{ [result appendString:@"NESTED"]; });
+                        });
+                        dispatch_async(queue, ^{ [result appendString:@"1"]; });
+                    });
+
+                    it(@"should execute the previously enqueued tasks, in FIFO order, before executing the synchronous task", ^{
+                        result should equal(@"01T");
+                    });
+
+                    it(@"should enqueue the nested asynchronous task", ^{
+                        result = [NSMutableString string];
+                        dispatch_execute_all_tasks(queue);
+                        result should equal(@"NESTED");
+                    });
+                });
+
+                context(@"one of which synchronously dispatches another task to the same queue", ^{
+                    beforeEach(^{
+                        dispatch_async(queue, ^{ dispatch_sync(queue, ^{}); });
+                    });
+
+                    itShouldRaiseException();
+                });
+            });
+        });
+
+        context(@"on a concurrent queue", ^{
+            beforeEach(^{
+                queue = dispatch_queue_create("a concurrent queue", DISPATCH_QUEUE_CONCURRENT);
+            });
+
+            context(@"that has no other tasks", ^{
+                beforeEach(^{
+                    dispatch_queue_tasks(queue) should be_empty;
+                });
+
+                it(@"should execute the task immediately", ^{
+                    result should equal(@"T");
+                });
+
+                context(@"when the task dispatches, to the same queue, a second task", ^{
+                    id secondTask = ^{ [result appendString:@"t"]; };
+
+                    context(@"asynchronously", ^{
+                        beforeEach(^{
+                            task = [^{
+                                [result appendString:@"T"];
+                                dispatch_async(queue, secondTask);
+                            } copy];
+                        });
+
+                        it(@"should execute the synchronous task", ^{
+                            result should equal(@"T");
+                        });
+
+                        it(@"should enqueue the asynchronous task", ^{
+                            dispatch_queue_tasks(queue) should contain(secondTask);
+                        });
+                    });
+
+                    context(@"synchronously", ^{
+                        beforeEach(^{
+                            task = [^{
+                                [result appendString:@"1"];
+                                dispatch_sync(queue, secondTask);
+                                [result appendString:@"2"];
+                            } copy];
+                        });
+
+                        it(@"should start the outer task, complete the inner task, and finally complete the outer task", ^{
+                            result should equal(@"1t2");
+                        });
+                    });
+                });
+            });
+
+            context(@"that has previously queued tasks", ^{
+                context(@"none of which dispatch tasks to the same queue", ^{
+                    beforeEach(^{
+                        dispatch_async(queue, ^{ [result appendString:@"0"]; });
+                        dispatch_async(queue, ^{ [result appendString:@"1"]; });
+                    });
+
+                    it(@"should execute the previously enqueued tasks, along with the synchronous task, in random order", ^{
+                        result.length should equal(3);
+                    });
+                });
+
+                context(@"one of which asynchronously dispatches another task to the same queue", ^{
+                    beforeEach(^{
+                        dispatch_async(queue, ^{
+                            [result appendString:@"0"];
+                            dispatch_async(queue, ^{ [result appendString:@"NESTED"]; });
+                        });
+                        dispatch_async(queue, ^{ [result appendString:@"1"]; });
+                    });
+
+                    it(@"should complete the previously queued tasks, along with the synchronous task, in random order", ^{
+                        result.length should equal(3);
+                    });
+
+                    it(@"should enqueue the nested asynchronous task", ^{
+                        result = [NSMutableString string];
+                        dispatch_execute_all_tasks(queue);
+                        result should equal(@"NESTED");
+                    });
+                });
+
+                context(@"one of which synchronously dispatches another task to the same queue", ^{
+                    beforeEach(^{
+                        dispatch_async(queue, ^{
+                            [result appendString:@"0"];
+                            dispatch_sync(queue, ^{ [result appendString:@"N"]; });
+                        });
+                        dispatch_async(queue, ^{ [result appendString:@"1"]; });
+                    });
+
+                    it(@"should complete all tasks up to and including the nested synchronous task", ^{
+                        result.length should equal(4);
+                    });
+                });
+            });
+        });
+    });
 
     describe(@"dispatch_execute_next_task", ^{
         __block dispatch_queue_t queue;

@@ -2,16 +2,49 @@
 #import "STDispatchQueue.h"
 #import "STDispatch.h"
 
+#pragma mark - STDispatchTask
+@interface STDispatchTask : NSObject
+
+@property (nonatomic, copy) dispatch_block_t block;
+@property (nonatomic, assign) BOOL aboutToStart, started;
+
+- (instancetype)initWithBlock:(dispatch_block_t)block;
+- (void)startExecution;
+- (void)execute;
+
+@end
+
+@implementation STDispatchTask
+
+- (instancetype)initWithBlock:(dispatch_block_t)block {
+    if (self = [super init]) {
+        self.block = block;
+    }
+    return self;
+}
+
+- (instancetype)init { [self doesNotRecognizeSelector:_cmd]; return nil; }
+
+- (void)startExecution { self.started = true; };
+- (void)execute { self.block(); }
+
+@end
+
+
+#pragma mark - STDispatchQueue
 @interface STDispatchQueue : NSObject
 
 @property (nonatomic, strong) NSString *label;
-@property (nonatomic, assign) BOOL concurrent;
+@property (nonatomic, assign) BOOL concurrent, executingSynchronousTask;
 @property (nonatomic, strong) NSMutableArray *tasks;
 
 + (NSMutableArray *)queues;
 
 - (instancetype)initWithLabel:(const char *)label attr:(dispatch_queue_attr_t)attr;
-- (void)enqueue:(dispatch_block_t)task;
+
+- (void)enqueue:(dispatch_block_t)block;
+- (void)enqueueSynchronous:(dispatch_block_t)block;
+
 - (void)executeNextTask;
 - (void)executeTaskAtIndex:(uint8_t)index;
 - (void)executeAllTasks;
@@ -34,7 +67,7 @@ NSArray *dispatch_queue_tasks(dispatch_queue_t queue) {
     if (STDispatch.behavior == STDispatchBehaviorAsynchronous) {
         @throw [NSString stringWithFormat:@"Cannot enumerate tasks for queue when dispatch behavior is asynchronous"];
     } else {
-        return ((STDispatchQueue *)queue).tasks;
+        return [((STDispatchQueue *)queue).tasks valueForKeyPath:@"@unionOfObjects.block"];
     }
 }
 
@@ -61,7 +94,7 @@ static dispatch_queue_t st_dispatch_queue_create(const char *label, dispatch_que
     }
 }
 
-static id __mainQueue;
+static dispatch_queue_t __mainQueue;
 static dispatch_queue_t (*real_dispatch_get_main_queue)(void);
 static dispatch_queue_t st_dispatch_get_main_queue(void) {
     if (STDispatch.behavior == STDispatchBehaviorAsynchronous) {
@@ -69,6 +102,7 @@ static dispatch_queue_t st_dispatch_get_main_queue(void) {
     } else {
         if (!__mainQueue) {
             __mainQueue = dispatch_queue_create("MAIN QUEUE", DISPATCH_QUEUE_SERIAL);
+            ((STDispatchQueue *)__mainQueue).executingSynchronousTask = YES;
         }
         return __mainQueue;
     }
@@ -114,6 +148,15 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     }
 }
 
+static void (*real_dispatch_sync)(dispatch_queue_t, dispatch_block_t);
+static void st_dispatch_sync(dispatch_queue_t queue, dispatch_block_t block) {
+    if (STDispatch.behavior == STDispatchBehaviorAsynchronous) {
+        real_dispatch_sync(queue, block);
+    } else {
+        [(id)queue enqueueSynchronous:block];
+    }
+}
+
 @implementation STDispatchQueue
 
 + (void)beforeEach {
@@ -137,6 +180,9 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 
     real_dispatch_async = proxy_dispatch_async;
     proxy_dispatch_async = st_dispatch_async;
+
+    real_dispatch_sync = proxy_dispatch_sync;
+    proxy_dispatch_sync = st_dispatch_sync;
 }
 
 + (NSMutableArray *)queues {
@@ -157,12 +203,29 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     [self doesNotRecognizeSelector:_cmd]; return nil;
 }
 
-- (void)enqueue:(dispatch_block_t)task {
+- (void)enqueue:(dispatch_block_t)block {
     if (STDispatch.behavior == STDispatchBehaviorSynchronous) {
-        task();
+        block();
     } else if (STDispatch.behavior == STDispatchBehaviorManual) {
+        STDispatchTask *task = [[STDispatchTask alloc] initWithBlock:block];
         [self.tasks addObject:task];
     }
+}
+
+- (void)enqueueSynchronous:(dispatch_block_t)block {
+    [self detectDeadlock:^{
+        [self enqueue:block];
+        [self executeAllTasks];
+    }];
+}
+
+- (void)detectDeadlock:(void (^)())block {
+    if (self.executingSynchronousTask && !self.concurrent) {
+        @throw [NSString stringWithFormat:@"DEADLOCK: synchronous dispatch on queue: '%@'", self.label];
+    }
+    self.executingSynchronousTask = YES;
+    block();
+    self.executingSynchronousTask = NO;
 }
 
 - (void)executeNextTask {
@@ -171,8 +234,8 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     } else if (!self.tasks.count) {
         @throw [NSString stringWithFormat:@"Cannot dispatch_execute_next_task on empty queue '%@' (did you mean to set the dispatch behavior to manual?)", self.label];
     } else {
-        dispatch_block_t task = self.tasks.firstObject;
-        task();
+        STDispatchTask *task = self.tasks.firstObject;
+        [task execute];
         [self.tasks removeObjectAtIndex:0];
     }
 }
@@ -183,26 +246,36 @@ static void st_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     } else if (index >= self.tasks.count) {
         @throw [NSString stringWithFormat:@"Cannot dispatch_execute_task_at_index on out of bounds index (%d) in queue '%@'", index, self.label];
     } else {
-        dispatch_block_t task = [self.tasks objectAtIndex:index];
-        task();
+        STDispatchTask *task = [self.tasks objectAtIndex:index];
+        [task execute];
         [self.tasks removeObjectAtIndex:index];
     }
 }
 
 - (void)executeAllTasks {
-    if (self.concurrent) {
-        while (self.tasks.count) {
-            uint32_t index = arc4random_uniform((uint32_t)self.tasks.count);
-            dispatch_block_t task = self.tasks[index];
-            task();
-            [self.tasks removeObjectAtIndex:index];
-        }
-    } else {
-        [self.tasks enumerateObjectsUsingBlock:^(dispatch_block_t task, NSUInteger idx, BOOL *stop) {
-            task();
-        }];
-        [self.tasks removeAllObjects];
+    [self.tasks enumerateObjectsUsingBlock:^(STDispatchTask *task, NSUInteger idx, BOOL *stop) {
+        task.aboutToStart = true;
+    }];
+
+    NSArray *unstartedTasks;
+    while ((unstartedTasks = [self.tasks filteredArrayUsingPredicate:self.unstartedTasksPredicate]).count) {
+        uint32_t index = self.concurrent ? arc4random_uniform((uint32_t)unstartedTasks.count) : 0;
+
+        STDispatchTask *task = unstartedTasks[index];
+        task.started = true;
+        [task execute];
+        [self.tasks removeObject:task];
     }
+}
+
+- (NSPredicate *)unstartedTasksPredicate {
+    static NSPredicate *predicate;
+    if (!predicate) {
+        predicate = [NSPredicate predicateWithBlock:^BOOL(STDispatchTask *task, NSDictionary *bindings) {
+            return task.aboutToStart && !task.started;
+        }];
+    }
+    return predicate;
 }
 
 @end

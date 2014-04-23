@@ -13,6 +13,9 @@ extern dispatch_queue_t (*proxy_dispatch_get_global_queue)(dispatch_queue_priori
 #define dispatch_async proxy_dispatch_async
 extern void (*proxy_dispatch_async)(dispatch_queue_t, dispatch_block_t);
 
+#define dispatch_sync proxy_dispatch_sync
+extern void (*proxy_dispatch_sync)(dispatch_queue_t, dispatch_block_t);
+
 #define dispatch_group_create proxy_dispatch_group_create
 extern dispatch_group_t (*proxy_dispatch_group_create)(void);
 
