@@ -5,10 +5,10 @@ Overridden for testing asynchronous behavior with GCD queues
 
 [x]dispatch_queue_t
 [x]dispatch_queue_create
-[ ]dispatch_sync
+[x]dispatch_sync
 [x]dispatch_async
-[ ]dispatch_once_t
-[ ]dispatch_once
+[/]dispatch_once_t
+[/]dispatch_once
 [x]dispatch_group_t
 [x]dispatch_group_create
 [ ]dispatch_group_enter
